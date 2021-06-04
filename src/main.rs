@@ -17,13 +17,14 @@ struct World {
 }
 
 impl World {
-    fn new(width: usize, height: usize) -> World {
+    fn new(width: usize, height: usize, value_func: fn (usize, usize) -> bool) -> World {
         let mut cells = Vec::with_capacity(width * height);
-        for _y in 0..height {
-            for _x in 0..width {
+        for y in 0..height {
+            for x in 0..width {
+                let alive = value_func(x, y);
                 let cell = Cell {
-                    alive: false,
-                    alive_prev: false,
+                    alive: alive,
+                    alive_prev: alive,
                     draw: true,
                     recheck: true,
                 };
@@ -38,7 +39,11 @@ impl World {
     }
 }
 
+fn initialize_cell(_x: usize, _y: usize) -> bool {
+    rand::random::<f32>() < 0.25
+}
+
 fn main() {
-    let world = World::new(WIDTH, HEIGHT);
+    let world = World::new(WIDTH, HEIGHT, initialize_cell);
     println!("{:?}", world);
 }
