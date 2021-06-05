@@ -71,14 +71,14 @@ impl World {
     pub fn new(
         width: usize,
         height: usize,
-        value_func: fn(usize, usize) -> bool,
+        initializer: &dyn Initializer,
         visualizer: &mut dyn Visualizer,
     ) -> World {
         let mut cells = Vec::with_capacity(width * height);
         let mut cells_to_recheck = Vec::with_capacity(width * height);
         for y in 0..height {
             for x in 0..width {
-                let alive = value_func(x, y);
+                let alive = initializer.initialize_cell(x, y);
                 let cell = Cell {
                     alive: alive,
                     alive_prev: alive,
@@ -172,4 +172,8 @@ pub trait Visualizer {
     fn update_world(&mut self, world: &World) -> ();
     fn update_cells(&mut self, world: &World, cells: &Vec<CellRef>) -> ();
     fn start_loop(&mut self, world: &mut World);
+}
+
+pub trait Initializer {
+    fn initialize_cell(&self, x: usize, y: usize) -> bool;
 }
