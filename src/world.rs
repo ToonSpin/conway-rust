@@ -48,6 +48,10 @@ impl World {
         self.cells[y * self.width + x].alive
     }
 
+    fn was_alive(&self, x: usize, y: usize) -> bool {
+        self.cells[y * self.width + x].alive_prev
+    }
+
     pub fn get_width(&self) -> usize {
         self.width
     }
@@ -121,7 +125,7 @@ impl World {
             let mut cell = self.get_cloned_cell(x, y);
             let mut recheck = false;
             for (nx, ny) in neighbors.iter() {
-                if self.is_alive(*nx, *ny) {
+                if self.was_alive(*nx, *ny) {
                     alive_neighbors += 1;
                 }
             }
