@@ -171,4 +171,5 @@ impl World {
 pub trait Visualizer {
     fn update_world(&mut self, world: &World) -> ();
     fn update_cells(&mut self, world: &World, cells: &Vec<CellRef>) -> ();
+    fn start_loop(&mut self, world: &mut World);
 }
