@@ -18,15 +18,14 @@ pub struct CellRef {
     pub y: usize,
 }
 
-pub struct World<'a> {
+pub struct World {
     cells: Vec<Cell>,
     width: usize,
     height: usize,
     cells_to_recheck: Vec<CellRef>,
-    visualizer: &'a dyn Visualizer,
 }
 
-impl World<'_> {
+impl World {
     fn get_neighbors(&self, x: usize, y: usize) -> [(usize, usize); 8] {
         let minx = (x + self.width - 1) % self.width;
         let miny = (y + self.height - 1) % self.height;
@@ -49,6 +48,14 @@ impl World<'_> {
         self.cells[y * self.width + x].alive
     }
 
+    pub fn get_width(&self) -> usize {
+        self.width
+    }
+
+    pub fn get_height(&self) -> usize {
+        self.height
+    }
+
     fn get_mut_cell(&mut self, x: usize, y: usize) -> &mut Cell {
         &mut self.cells[y * self.width + x]
     }
@@ -61,7 +68,7 @@ impl World<'_> {
         width: usize,
         height: usize,
         value_func: fn(usize, usize) -> bool,
-        visualizer: &dyn Visualizer,
+        visualizer: &mut dyn Visualizer,
     ) -> World {
         let mut cells = Vec::with_capacity(width * height);
         let mut cells_to_recheck = Vec::with_capacity(width * height);
@@ -83,7 +90,6 @@ impl World<'_> {
             width,
             height,
             cells_to_recheck,
-            visualizer,
         };
         visualizer.update_world(&world);
         world
@@ -100,7 +106,7 @@ impl World<'_> {
         }
     }
 
-    pub fn iterate(&mut self) {
+    pub fn iterate(&mut self, visualizer: &mut dyn Visualizer) {
         // println!("====== New Iteration");
         let mut cells_to_draw = Vec::new();
         let mut cells_to_recheck_next = Vec::new();
@@ -153,12 +159,12 @@ impl World<'_> {
             let mut_cell = self.get_mut_cell(x, y);
             *mut_cell = cell;
         }
-        self.visualizer.update_cells(&cells_to_draw);
+        visualizer.update_cells(&self, &cells_to_draw);
         self.cells_to_recheck = cells_to_recheck_next;
     }
 }
 
 pub trait Visualizer {
-    fn update_world(&self, world: &World) -> ();
-    fn update_cells(&self, cells: &Vec<CellRef>) -> ();
+    fn update_world(&mut self, world: &World) -> ();
+    fn update_cells(&mut self, world: &World, cells: &Vec<CellRef>) -> ();
 }

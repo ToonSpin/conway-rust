@@ -20,9 +20,9 @@ fn initialize_cell(_x: usize, _y: usize) -> bool {
 
 fn main() {
     let visualizer = NullVisualizer {};
-    let mut world = World::new(WIDTH, HEIGHT, initialize_cell, &visualizer);
+    let mut world = World::new(WIDTH, HEIGHT, initialize_cell, &mut visualizer);
     loop {
-        world.iterate();
+        world.iterate(&mut visualizer);
     }
     // println!("{:?}", world);
 }
