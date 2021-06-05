@@ -2,7 +2,7 @@ pub mod initializer;
 pub mod sdlvisualizer;
 pub mod world;
 
-use initializer::UniformInitializer;
+use initializer::OpenSimplexInitializer;
 use sdlvisualizer::SdlVisualizer;
 use world::Visualizer;
 use world::World;
@@ -12,7 +12,7 @@ const HEIGHT: usize = 900;
 
 fn main() {
     let mut visualizer = SdlVisualizer::new(WIDTH, HEIGHT);
-    let initializer = UniformInitializer::new(0.25);
+    let initializer = OpenSimplexInitializer::new();
     let mut world = World::new(WIDTH, HEIGHT, &initializer, &mut visualizer);
     visualizer.start_loop(&mut world);
 }

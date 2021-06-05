@@ -8,6 +8,5 @@ edition = "2018"
 
 [dependencies]
 rand = "0.8.3"
-
-[dependencies.sdl2]
-version = "0.34.5"
+sdl2 = "0.34.5"
+noise = "0.7.0"
