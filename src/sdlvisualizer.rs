@@ -1,5 +1,8 @@
 use crate::world::{CellRef, Visualizer, World};
 use sdl2::{event::Event, keyboard::Keycode, pixels::Color, rect::Point, render::Canvas, Sdl};
+use std::time::Instant;
+
+const FRAMERATE_SAMPLE_SIZE: u128 = 100;
 
 pub struct SdlVisualizer {
     width: usize,
@@ -13,10 +16,6 @@ impl SdlVisualizer {
     pub fn new(width: usize, height: usize) -> SdlVisualizer {
         let sdl_context = sdl2::init().unwrap();
         let video_subsystem = sdl_context.video().unwrap();
-        let mut framerate_manager = sdl2::gfx::framerate::FPSManager::new();
-
-        framerate_manager.set_framerate(200).unwrap();
-        println!("Framerate: {}", framerate_manager.get_framerate());
 
         let window = video_subsystem
             .window("Game of Life", width as u32, height as u32)
@@ -69,6 +68,9 @@ impl SdlVisualizer {
 impl Visualizer for SdlVisualizer {
     fn start_loop(&mut self, world: &mut World) {
         let mut event_pump = self.sdl_context.event_pump().unwrap();
+        let mut ticks = 0;
+        let mut prev_instant = Instant::now();
+
         'mainloop: loop {
             for event in event_pump.poll_iter() {
                 match event {
@@ -83,6 +85,15 @@ impl Visualizer for SdlVisualizer {
 
             world.iterate(self);
             self.canvas.present();
+
+            if ticks == FRAMERATE_SAMPLE_SIZE {
+                ticks = 0;
+                let millis = prev_instant.elapsed().as_millis();
+                println!("{} FPS", 1000 * FRAMERATE_SAMPLE_SIZE / millis);
+                prev_instant = Instant::now();
+                self.draw_world();
+            }
+            ticks += 1;
         }
     }
 
