@@ -1,8 +1,6 @@
 use crate::world::Initializer;
 use noise::{NoiseFn, OpenSimplex, Seedable};
 
-use crate::WIDTH;
-
 pub struct UniformInitializer {
     threshold: f64,
 }
@@ -23,15 +21,22 @@ pub struct OpenSimplexInitializer {
     generator: OpenSimplex,
     lower_bound: f64,
     upper_bound: f64,
+    factor: f64,
 }
 
 impl OpenSimplexInitializer {
-    pub fn new() -> OpenSimplexInitializer {
+    pub fn new(width: usize, height: usize) -> OpenSimplexInitializer {
         let generator = OpenSimplex::new().set_seed(rand::random::<u32>());
+        let factor = if width > height {
+            7.0 / width as f64
+        } else {
+            7.0 / height as f64
+        };
         OpenSimplexInitializer {
             generator,
             lower_bound: 0.25,
             upper_bound: 0.75,
+            factor,
         }
     }
 }
@@ -46,8 +51,8 @@ impl OpenSimplexInitializer {
 
 impl Initializer for OpenSimplexInitializer {
     fn initialize_cell(&self, x: usize, y: usize) -> bool {
-        let p: f64 = (7 * x) as f64 / WIDTH as f64;
-        let q: f64 = (7 * y) as f64 / WIDTH as f64;
+        let p: f64 = self.factor * x as f64;
+        let q: f64 = self.factor * y as f64;
 
         let threshold = self.map_generator_value(self.generator.get([p, q]));
         rand::random::<f64>() < threshold

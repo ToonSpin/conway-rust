@@ -13,9 +13,35 @@ pub struct SdlVisualizer {
 }
 
 impl SdlVisualizer {
-    pub fn new(width: usize, height: usize) -> SdlVisualizer {
+    fn draw_cell(&mut self, x: usize, y: usize) {
+        let cx = x as i32;
+        let cy = y as i32;
+
+        if self.cells[y * self.width + x] {
+            self.canvas.set_draw_color(Color::RGB(255, 255, 255));
+        } else {
+            self.canvas.set_draw_color(Color::RGB(0, 0, 0));
+        }
+
+        self.canvas.draw_point(Point::new(cx, cy)).unwrap();
+    }
+
+    fn draw_world(&mut self) {
+        for y in 0..self.height {
+            for x in 0..self.width {
+                self.draw_cell(x, y);
+            }
+        }
+    }
+}
+
+impl Visualizer for SdlVisualizer {
+    fn new(width: Option<usize>, height: Option<usize>) -> SdlVisualizer {
         let sdl_context = sdl2::init().unwrap();
         let video_subsystem = sdl_context.video().unwrap();
+
+        let width = width.unwrap_or(1200);
+        let height = height.unwrap_or(900);
 
         let window = video_subsystem
             .window("Game of Life", width as u32, height as u32)
@@ -43,29 +69,14 @@ impl SdlVisualizer {
         }
     }
 
-    fn draw_cell(&mut self, x: usize, y: usize) {
-        let cx = x as i32;
-        let cy = y as i32;
-
-        if self.cells[y * self.width + x] {
-            self.canvas.set_draw_color(Color::RGB(255, 255, 255));
-        } else {
-            self.canvas.set_draw_color(Color::RGB(0, 0, 0));
-        }
-
-        self.canvas.draw_point(Point::new(cx, cy)).unwrap();
+    fn get_width(&self) -> usize {
+        self.width
     }
 
-    fn draw_world(&mut self) {
-        for y in 0..self.height {
-            for x in 0..self.width {
-                self.draw_cell(x, y);
-            }
-        }
+    fn get_height(&self) -> usize {
+        self.height
     }
-}
 
-impl Visualizer for SdlVisualizer {
     fn start_loop(&mut self, world: &mut World) {
         let mut event_pump = self.sdl_context.event_pump().unwrap();
         let mut ticks = 0;

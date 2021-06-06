@@ -169,6 +169,11 @@ pub trait Visualizer {
     fn update_world(&mut self, world: &World) -> ();
     fn update_cells(&mut self, world: &World, cells: &Vec<CellRef>) -> ();
     fn start_loop(&mut self, world: &mut World);
+    fn new(width: Option<usize>, height: Option<usize>) -> Self
+    where
+        Self: Sized;
+    fn get_width(&self) -> usize;
+    fn get_height(&self) -> usize;
 }
 
 pub trait Initializer {

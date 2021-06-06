@@ -1,4 +1,4 @@
-use crate::world::{World, Visualizer, CellRef};
+use crate::world::{CellRef, Visualizer, World};
 
 pub struct TerminalVisualizer {
     width: usize,
@@ -7,14 +7,6 @@ pub struct TerminalVisualizer {
 }
 
 impl TerminalVisualizer {
-    pub fn new(width: usize, height: usize) -> TerminalVisualizer {
-        TerminalVisualizer {
-            width,
-            height,
-            cells: vec![false; width * height],
-        }
-    }
-
     fn draw_world(&self) {
         let mut chars = Vec::new();
         for y in 0..self.height {
@@ -33,6 +25,24 @@ impl TerminalVisualizer {
 }
 
 impl Visualizer for TerminalVisualizer {
+    fn new(width: Option<usize>, height: Option<usize>) -> TerminalVisualizer {
+        let width = width.unwrap_or(80);
+        let height = height.unwrap_or(30);
+        TerminalVisualizer {
+            width,
+            height,
+            cells: vec![false; width * height],
+        }
+    }
+
+    fn get_width(&self) -> usize {
+        self.width
+    }
+
+    fn get_height(&self) -> usize {
+        self.height
+    }
+
     fn start_loop(&mut self, world: &mut World) {
         loop {
             world.iterate(self);
