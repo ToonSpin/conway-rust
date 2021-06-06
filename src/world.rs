@@ -111,14 +111,12 @@ impl World {
     }
 
     pub fn iterate(&mut self, visualizer: &mut dyn Visualizer) {
-        // println!("====== New Iteration");
         let mut cells_to_draw = Vec::new();
         let mut cells_to_recheck_next = Vec::new();
         self.reset_world();
         for cell_to_recheck in self.cells_to_recheck.to_vec().iter() {
             let x = cell_to_recheck.x;
             let y = cell_to_recheck.y;
-            // println!("Checking ({}, {})", x, y);
 
             let neighbors = self.get_neighbors(x, y);
             let mut alive_neighbors = 0;
@@ -144,7 +142,6 @@ impl World {
                 }
             }
             if cell.draw {
-                // println!("Asking to draw ({}, {})", x, y);
                 cells_to_draw.push(CellRef { x, y });
             }
             if recheck {
