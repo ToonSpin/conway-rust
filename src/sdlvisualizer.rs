@@ -2,6 +2,8 @@ use crate::world::{CellRef, Visualizer, World};
 use sdl2::{event::Event, keyboard::Keycode, pixels::Color, rect::Point, render::Canvas, Sdl};
 // use std::time::Instant;
 
+const DEFAULT_WIDTH: usize = 1200;
+const DEFAULT_HEIGHT: usize = 675;
 const FRAMERATE_SAMPLE_SIZE: u128 = 100;
 
 pub struct SdlVisualizer {
@@ -40,8 +42,8 @@ impl Visualizer for SdlVisualizer {
         let sdl_context = sdl2::init().unwrap();
         let video_subsystem = sdl_context.video().unwrap();
 
-        let width = width.unwrap_or(1200);
-        let height = height.unwrap_or(900);
+        let width = width.unwrap_or(DEFAULT_WIDTH);
+        let height = height.unwrap_or(DEFAULT_HEIGHT);
 
         let window = video_subsystem
             .window("Game of Life", width as u32, height as u32)

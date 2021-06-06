@@ -1,5 +1,8 @@
 use crate::world::{CellRef, Visualizer, World};
 
+const DEFAULT_WIDTH: usize = 80;
+const DEFAULT_HEIGHT: usize = 30;
+
 pub struct TerminalVisualizer {
     width: usize,
     height: usize,
@@ -26,8 +29,9 @@ impl TerminalVisualizer {
 
 impl Visualizer for TerminalVisualizer {
     fn new(width: Option<usize>, height: Option<usize>) -> TerminalVisualizer {
-        let width = width.unwrap_or(80);
-        let height = height.unwrap_or(30);
+        let width = width.unwrap_or(DEFAULT_WIDTH);
+        let height = height.unwrap_or(DEFAULT_HEIGHT);
+
         TerminalVisualizer {
             width,
             height,
