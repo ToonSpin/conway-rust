@@ -10,4 +10,8 @@ edition = "2018"
 rand = "0.8.3"
 sdl2 = "0.34.5"
 noise = "0.7.0"
-structopt = { version = "0.3", default-features = false }
+
+[dependencies.structopt]
+version = "0.3"
+default-features = false
+features = ["wrap_help"]

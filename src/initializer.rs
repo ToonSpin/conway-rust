@@ -25,7 +25,7 @@ pub struct OpenSimplexInitializer {
 }
 
 impl OpenSimplexInitializer {
-    pub fn new(width: usize, height: usize) -> OpenSimplexInitializer {
+    pub fn new(width: usize, height: usize, lower_bound: f64, upper_bound: f64) -> OpenSimplexInitializer {
         let generator = OpenSimplex::new().set_seed(rand::random::<u32>());
         let factor = if width > height {
             7.0 / width as f64
@@ -34,8 +34,8 @@ impl OpenSimplexInitializer {
         };
         OpenSimplexInitializer {
             generator,
-            lower_bound: 0.25,
-            upper_bound: 0.75,
+            lower_bound,
+            upper_bound,
             factor,
         }
     }
